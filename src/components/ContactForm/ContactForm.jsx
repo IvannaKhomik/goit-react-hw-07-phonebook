@@ -1,17 +1,16 @@
 import React, { useState, useId } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { nanoid } from 'nanoid';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import { getContacts } from 'redux/selectors';
+import { selectContacts } from 'redux/selectors';
 import { Form, FormLabel, InputField, SubmitBtn } from './ContactForm.styled';
-import { addContact } from 'redux/contactsSlice';
+import { addContact } from 'redux/operations';
 
 export const ContactForm = () => {
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [phone, setPhone] = useState('');
 
   const dispatch = useDispatch();
-  const contacts = useSelector(getContacts);
+  const contacts = useSelector(selectContacts);
 
   const nameInputId = useId();
   const telInputId = useId();
@@ -22,8 +21,8 @@ export const ContactForm = () => {
       case 'name':
         setName(value);
         break;
-      case 'number':
-        setNumber(value);
+      case 'phone':
+        setPhone(value);
         break;
       default:
         return;
@@ -33,9 +32,8 @@ export const ContactForm = () => {
   const handleSubmit = e => {
     e.preventDefault();
     const contact = {
-      id: nanoid(),
       name,
-      number,
+      phone,
     };
     const contactName = contact.name;
     const isInclude = contacts.some(item => contactName === item.name);
@@ -53,7 +51,7 @@ export const ContactForm = () => {
 
   const reset = () => {
     setName('');
-    setNumber('');
+    setPhone('');
   };
 
   return (
@@ -72,8 +70,8 @@ export const ContactForm = () => {
       <FormLabel htmlFor={telInputId}>Number</FormLabel>
       <InputField
         type="tel"
-        name="number"
-        value={number}
+        name="phone"
+        value={phone}
         id={telInputId}
         onChange={changeInput}
         pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"

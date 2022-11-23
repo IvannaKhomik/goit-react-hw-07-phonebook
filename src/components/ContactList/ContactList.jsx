@@ -1,31 +1,27 @@
 import { useSelector } from 'react-redux';
-import { getContacts, getFilter } from 'redux/selectors';
+import { selectFilteredList } from 'redux/selectors';
 import { ContactItem } from '../ContactItem';
-import { List } from './ContactList.styled';
+import { List, NotFoundMessage } from './ContactList.styled';
 
 export const ContactList = () => {
-  const contacts = useSelector(getContacts);
-  const filterValue = useSelector(getFilter);
-
-  const normalizedFilter = filterValue.toLowerCase();
-
-  const filteredContacts = filterValue
-    ? contacts.filter(contact =>
-        contact.name.toLowerCase().includes(normalizedFilter)
-      )
-    : contacts;
+  const filteredContacts = useSelector(selectFilteredList);
+  const noContactsFind = filteredContacts.length === 0;
 
   return (
     <>
       <List>
-        {filteredContacts.map(contact => (
-          <ContactItem
-            key={contact.id}
-            id={contact.id}
-            name={contact.name}
-            number={contact.number}
-          />
-        ))}
+        {noContactsFind ? (
+          <NotFoundMessage>We didn't find any contacts</NotFoundMessage>
+        ) : (
+          filteredContacts.map(contact => (
+            <ContactItem
+              key={contact.id}
+              id={contact.id}
+              name={contact.name}
+              number={contact.phone}
+            />
+          ))
+        )}
       </List>
     </>
   );
